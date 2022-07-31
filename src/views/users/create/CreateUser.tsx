@@ -1,5 +1,5 @@
 import { gql, useMutation } from "@apollo/client";
-import { Box, Button, CircularProgress, TextField } from "@mui/material";
+import { Box, Button, CircularProgress, Stack, TextField } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Form from "../../../components/form/Form";
@@ -81,6 +81,8 @@ const CreateUser: React.FC = () => {
     setUserInput((input) => ({ ...input, password: passwordGenerated }));
   };
 
+  const handleGoBack = () => navigate("/user/list", { replace: true });
+
   const handleSaveUser = () => {
     const userInputModel = getUserInputModel(userType);
 
@@ -99,11 +101,13 @@ const CreateUser: React.FC = () => {
     createUser({ variables });
   };
 
-  if (error) showMessage({ message: error.message });
-
   useEffect(() => {
     if (userType) handleSetInputUserType();
   }, [userType]);
+
+  useEffect(() => {
+    if (error) showMessage({ message: error.message });
+  }, [error]);
 
   return (
     <Box padding={10}>
@@ -123,19 +127,23 @@ const CreateUser: React.FC = () => {
         <Button onClick={handleGeneratePassword}>Wygeneruj hasło</Button>
       </Box>
       <Box sx={{ height: 20 }} />
-      <Box display="flex" justifyContent="center" onClick={handleSaveUser}>
+      <Box display="flex" justifyContent="center">
         {!loading ? (
-          <Button
-            disabled={Object.keys(userInput).some((key) => {
-              const userInputKeys = getUserInputKeys(userType);
-              return (
-                userInputKeys.includes(key) &&
-                userInput[key as keyof typeof userInput].length === 0
-              );
-            })}
-          >
-            Zapisz
-          </Button>
+          <Stack direction="row" spacing={1}>
+            <Button
+              disabled={Object.keys(userInput).some((key) => {
+                const userInputKeys = getUserInputKeys(userType);
+                return (
+                  userInputKeys.includes(key) &&
+                  userInput[key as keyof typeof userInput].length === 0
+                );
+              })}
+              onClick={handleSaveUser}
+            >
+              Zapisz
+            </Button>
+            <Button onClick={handleGoBack}>Wróć</Button>
+          </Stack>
         ) : (
           <CircularProgress />
         )}

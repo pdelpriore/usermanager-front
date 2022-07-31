@@ -1,6 +1,6 @@
+import React, { useEffect, useState } from "react";
 import { gql, useMutation } from "@apollo/client";
-import { Box, Button, CircularProgress, TextField } from "@mui/material";
-import React, { useState } from "react";
+import { Box, Button, CircularProgress, Stack, TextField } from "@mui/material";
 import { useLocation, useNavigate } from "react-router";
 import Form from "../../../components/form/Form";
 import { userEditInputItems } from "../../../data/form/FormData";
@@ -45,7 +45,11 @@ const EditUser: React.FC = () => {
     editUser({ variables: { id, ...userInput } });
   };
 
-  if (error) showMessage({ message: error.message });
+  const handleGoBack = () => navigate("/user/list", { replace: true });
+
+  useEffect(() => {
+    if (error) showMessage({ message: error.message });
+  }, [error]);
 
   return (
     <Box padding={10}>
@@ -63,13 +67,16 @@ const EditUser: React.FC = () => {
       <Box sx={{ height: 20 }} />
       <Box display="flex" justifyContent="center" onClick={handleEditUser}>
         {!loading ? (
-          <Button
-            disabled={Object.values(userInput).some(
-              (value) => value.length === 0
-            )}
-          >
-            Edytuj
-          </Button>
+          <Stack direction="row" spacing={1}>
+            <Button
+              disabled={Object.values(userInput).some(
+                (value) => value.length === 0
+              )}
+            >
+              Edytuj
+            </Button>
+            <Button onClick={handleGoBack}>Wróć</Button>
+          </Stack>
         ) : (
           <CircularProgress />
         )}

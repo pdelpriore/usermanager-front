@@ -52,9 +52,10 @@ const CreateActivity: React.FC = () => {
   const handleCreateActivity = () =>
     createActivity({ variables: { id, stepNumber } });
 
-  const handleGoBack = () => navigate(-1);
+  const handleGoBack = () => navigate("/user/list", { replace: true });
 
-  const isDisabled = lastCreatedAt && moment(lastCreatedAt).isSame(now, "day");
+  const isDisabled =
+    Boolean(lastCreatedAt) && moment(lastCreatedAt).isSame(now, "day");
 
   return (
     <Box padding={10}>
