@@ -61,9 +61,12 @@ const CreateUser: React.FC = () => {
   const userType = searchParams.get("type") as string;
   const mutation = userType === UserType.ADMIN ? CREATE_ADMIN : CREATE_USER;
 
-  const [createUser, { loading, error }] = useMutation(mutation, {
+  const [createUser, { loading }] = useMutation(mutation, {
     onCompleted: (data) => {
       if (data?.addUser) navigate(-1);
+    },
+    onError: (error) => {
+      if (error) showMessage({ message: error.message });
     },
     refetchQueries: [{ query: GET_USERS }],
   });
@@ -104,10 +107,6 @@ const CreateUser: React.FC = () => {
   useEffect(() => {
     if (userType) handleSetInputUserType();
   }, [userType]);
-
-  useEffect(() => {
-    if (error) showMessage({ message: error.message });
-  }, [error]);
 
   return (
     <Box padding={10}>

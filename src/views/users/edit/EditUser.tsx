@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { gql, useMutation } from "@apollo/client";
 import { Box, Button, CircularProgress, Stack, TextField } from "@mui/material";
 import { useLocation, useNavigate } from "react-router";
@@ -31,9 +31,12 @@ const EditUser: React.FC = () => {
 
   const [userInput, setUserInput] = useState({ ...rest });
 
-  const [editUser, { loading, error }] = useMutation(EDIT_USER, {
+  const [editUser, { loading }] = useMutation(EDIT_USER, {
     onCompleted: (data) => {
       if (data?.editUser) navigate(-1);
+    },
+    onError: (error) => {
+      if (error) showMessage({ message: error.message });
     },
     refetchQueries: [{ query: GET_USERS }],
   });
@@ -46,10 +49,6 @@ const EditUser: React.FC = () => {
   };
 
   const handleGoBack = () => navigate("/user/list", { replace: true });
-
-  useEffect(() => {
-    if (error) showMessage({ message: error.message });
-  }, [error]);
 
   return (
     <Box padding={10}>
